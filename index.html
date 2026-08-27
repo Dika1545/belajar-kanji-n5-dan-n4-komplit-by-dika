@@ -321,7 +321,7 @@
     }
   };
   
-  let selectedLevel = 'N5';
+let selectedLevel = 'N5';
   let selectedSession = 1;
   let currentQuestions = [];
   let currentIndex = 0;
@@ -378,7 +378,7 @@
 
   function loadQuestion() {
     document.getElementById('feedback-box').style.display = 'none';
-    
+     
     const q = currentQuestions[currentIndex];
     document.getElementById('progress-txt').innerText = `Kotak ${selectedSession} - Soal ${currentIndex + 1} / ${currentQuestions.length}`;
     document.getElementById('score-txt').innerText = `Skor: ${score}`;
@@ -396,7 +396,6 @@
     const optionsContainer = document.getElementById('options-container');
     optionsContainer.innerHTML = '';
 
-    // Acak urutan opsi jawaban setiap kali soal dimuat
     const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
     const keys = ["A", "B", "C", "D"];
 
@@ -416,7 +415,7 @@
     const feedbackBox = document.getElementById('feedback-box');
     const title = document.getElementById('feedback-title');
     const exp = document.getElementById('explanation-txt');
-    const nextBtn = document.getElementById('next-btn'); // Ambil elemen tombol berikutnya
+    const nextBtn = document.getElementById('next-btn');
 
     document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
 
@@ -431,13 +430,21 @@
 
     exp.innerHTML = `${question.exp}`;
     
-    // Paksa munculkan feedback box dan tombol berikutnya secara eksplisit
     feedbackBox.style.display = 'block';
     feedbackBox.style.visibility = 'visible';
     feedbackBox.style.opacity = '1';
     
     if (nextBtn) {
-      nextBtn.style.display = 'inline-block'; // Pastikan tombolnya ikut tampil
+      nextBtn.style.display = 'inline-block';
+    }
+  }
+
+  function nextQuestion() {
+    currentIndex++;
+    if (currentIndex < currentQuestions.length) {
+      loadQuestion();
+    } else {
+      showResult();
     }
   }
   
