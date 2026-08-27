@@ -55,7 +55,8 @@
 
 <div class="card">
   <h1>漢字マスター (Kanji Master)</h1>
-  <p class="sub">Latihan Kanji N5 (5 Sesi) & N4 (7 Sesi) Lengkap dengan Romaji</p>
+  <!-- Penyesuaian teks deskripsi jumlah sesi -->
+  <p class="sub">Latihan Kanji N5 (12 Sesi) & N4 (12 Sesi) Lengkap dengan Romaji</p>
 
   <div id="setup-screen">
     <p><b>1. Pilih Tingkat Level:</b></p>
@@ -245,7 +246,7 @@
         { session: 2, desc: "Kanji 'Berlari'.", reading: "[ ___ ] る (Hashiru)", romaji: "Hashiru / Sou", meaning: "Berlari", options: [{ key: "A", kanji: "走", correct: true }, { key: "B", kanji: "足", correct: false }, { key: "C", kanji: "起", correct: false }, { key: "D", kanji: "徒", correct: false }], exp: "<b>Jawaban: 走</b>" },
         { session: 2, desc: "Kanji 'Berhenti'.", reading: "[ ___ ] まる (Tomaru)", romaji: "Tomaru / Shi", meaning: "Berhenti", options: [{ key: "A", kanji: "止", correct: true }, { key: "B", kanji: "正", correct: false }, { key: "C", kanji: "歩", correct: false }, { key: "D", kanji: "企", correct: false }], exp: "<b>Jawaban: 止</b>" },
         { session: 2, desc: "Kanji 'Naik/Memanjat'.", reading: "[ ___ ] る (Noru)", romaji: "Noru / Jou", meaning: "Naik kendaraan", options: [{ key: "A", kanji: "乗", correct: true }, { key: "B", kanji: "禾", correct: false }, { key: "C", kanji: "乖", correct: false }, { key: "D", kanji: "剰", correct: false }], exp: "<b>Jawaban: 乗</b>" },
-        { session: 2, desc: "Kanji 'Berat/Tumpuk'.", reading: "[ ___ ] い (OmOI)", romaji: "Omoi / Juu", meaning: "Berat", options: [{ key: "A", kanji: "重", correct: true }, { key: "B", kanji: "車", correct: false }, { key: "C", kanji: "童", correct: false }, { key: "D", kanji: "種", correct: false }], exp: "<b>Jawaban: 重</b>" },
+        { session: 2, desc: "Kanji 'Berat/Tumpuk'.", reading: "[ ___ ] い (Omoi)", romaji: "Omoi / Juu", meaning: "Berat", options: [{ key: "A", kanji: "重", correct: true }, { key: "B", kanji: "車", correct: false }, { key: "C", kanji: "童", correct: false }, { key: "D", kanji: "種", correct: false }], exp: "<b>Jawaban: 重</b>" },
 
         // KOTAK 3 N4: Perasaan & Pikiran
         { session: 3, desc: "Kanji 'Hati/Pikiran'.", reading: "こころ (Kokoro)", romaji: "Kokoro / Shin", meaning: "Hati", options: [{ key: "A", kanji: "心", correct: true }, { key: "B", kanji: "必", correct: false }, { key: "C", kanji: "思", correct: false }, { key: "D", kanji: "態", correct: false }], exp: "<b>Jawaban: 心</b>" },
@@ -395,6 +396,7 @@
     const optionsContainer = document.getElementById('options-container');
     optionsContainer.innerHTML = '';
 
+    // Acak urutan opsi jawaban setiap kali soal dimuat
     const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
     const keys = ["A", "B", "C", "D"];
 
