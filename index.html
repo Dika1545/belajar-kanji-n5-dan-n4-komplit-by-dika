@@ -416,6 +416,7 @@
     const feedbackBox = document.getElementById('feedback-box');
     const title = document.getElementById('feedback-title');
     const exp = document.getElementById('explanation-txt');
+    const nextBtn = document.getElementById('next-btn'); // Ambil elemen tombol berikutnya
 
     document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
 
@@ -429,18 +430,17 @@
     }
 
     exp.innerHTML = `${question.exp}`;
+    
+    // Paksa munculkan feedback box dan tombol berikutnya secara eksplisit
     feedbackBox.style.display = 'block';
-  }
-
-  function nextQuestion() {
-    currentIndex++;
-    if (currentIndex < currentQuestions.length) {
-      loadQuestion();
-    } else {
-      showResult();
+    feedbackBox.style.visibility = 'visible';
+    feedbackBox.style.opacity = '1';
+    
+    if (nextBtn) {
+      nextBtn.style.display = 'inline-block'; // Pastikan tombolnya ikut tampil
     }
   }
-
+  
   function showResult() {
     document.getElementById('game-screen').classList.add('hidden');
     document.getElementById('result-screen').classList.remove('hidden');
@@ -452,7 +452,7 @@
     
     document.getElementById('result-msg').innerText = msg;
   }
-
+  
   function resetGame() {
     document.getElementById('setup-screen').classList.remove('hidden');
     document.getElementById('result-screen').classList.add('hidden');
