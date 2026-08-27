@@ -439,12 +439,22 @@ let selectedLevel = 'N5';
     }
   }
 
-  function nextQuestion() {
-    currentIndex++;
+function nextQuestion() {
+    currentIndex++; // Naik ke soal berikutnya
+    
+    // Cek apakah masih ada soal tersisa
     if (currentIndex < currentQuestions.length) {
       loadQuestion();
+      // Pastikan kotak feedback ditutup paksa
+      document.getElementById('feedback-box').style.display = 'none'; 
     } else {
+      // Jika soal habis, paksa sembunyikan game dan munculkan hasil
       showResult();
+      document.getElementById('game-screen').classList.add('hidden');
+      document.getElementById('game-screen').style.display = 'none'; // Paksa hilang
+      
+      document.getElementById('result-screen').classList.remove('hidden');
+      document.getElementById('result-screen').style.display = 'block'; // Paksa muncul
     }
   }
   
