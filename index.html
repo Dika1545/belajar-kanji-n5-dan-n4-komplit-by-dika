@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>漢字マスター - Master Kanji N5 & N4</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #f4f6f9; text-align: center; margin: 0; padding: 20px; color: #2c3e50; }
+    .card { background: white; max-width: 760px; margin: 0 auto; padding: 25px; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+    h1 { color: #27ae60; margin-bottom: 5px; font-size: 26px; }
+    p.sub { color: #7f8c8d; font-size: 14px; margin-top: 0; margin-bottom: 20px; }
+    
+    .btn-primary { background: #27ae60; color: white; border: none; padding: 12px 24px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+    .btn-primary:hover { background: #219150; }
+    
+    .level-select { margin: 15px 0; }
+    .lvl-btn { background: #e8f8f5; color: #117a65; border: 2px solid #a3e4d7; padding: 10px 20px; margin: 5px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; }
+    .lvl-btn.active { background: #27ae60; color: white; border-color: #1e8449; }
+
+    /* Grid Kotak Sesi */
+    .session-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 20px 0; }
+    .session-card { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 15px; cursor: pointer; transition: 0.2s; text-align: center; }
+    .session-card:hover { border-color: #27ae60; background: #f0fbf7; transform: translateY(-2px); }
+    .session-card.selected { border-color: #27ae60; background: #e8f8f5; font-weight: bold; }
+    .session-title { font-size: 16px; color: #2c3e50; font-weight: bold; }
+    .session-count { font-size: 12px; color: #7f8c8d; margin-top: 4px; }
+
+    .dialogue-box { background: #f0fbf7; border-left: 5px solid #27ae60; padding: 18px; border-radius: 8px; text-align: left; margin-bottom: 20px; line-height: 1.6; }
+    .question-desc { font-size: 15px; font-weight: 600; color: #2c3e50; margin-bottom: 12px; background: #fff3e0; padding: 10px; border-radius: 6px; border-left: 3px solid #f39c12; }
+    .reading-text { font-size: 22px; font-weight: bold; color: #2980b9; margin-bottom: 2px; }
+    .romaji-text { font-size: 15px; color: #e67e22; font-weight: 600; margin-bottom: 4px; }
+    .meaning-text { font-size: 14px; color: #7f8c8d; font-style: italic; margin-bottom: 12px; }
+    .fill-blank { background: #e8f8f5; border: 2px dashed #27ae60; padding: 2px 10px; border-radius: 4px; color: #1e8449; font-weight: bold; }
+
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+    .opt-btn { background: #f8f9fa; border: 2px solid #e9ecef; border-radius: 10px; padding: 14px; text-align: left; cursor: pointer; transition: 0.2s; font-size: 16px; }
+    .opt-btn:hover { background: #e8f8f5; border-color: #27ae60; }
+    .opt-btn .opt-kanji { font-size: 28px; font-weight: bold; color: #2c3e50; display: block; text-align: center; }
+    .opt-btn .opt-key { font-size: 14px; font-weight: bold; color: #27ae60; display: block; }
+
+    .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; text-align: left; }
+    .feedback.correct { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+    .feedback.wrong { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+    .explanation { margin-top: 8px; font-size: 14px; color: #2c3e50; line-height: 1.5; }
+
+    .score-board { font-size: 16px; font-weight: bold; margin-bottom: 15px; color: #34495e; display: flex; justify-content: space-between; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1>漢字マスター (Kanji Master)</h1>
+  <p class="sub">Latihan Kanji N5 (5 Sesi) & N4 (7 Sesi) Lengkap dengan Romaji</p>
+
+  <div id="setup-screen">
+    <p><b>1. Pilih Tingkat Level:</b></p>
+    <div class="level-select">
+      <button id="btn-n5" class="lvl-btn active" onclick="switchLevel('N5')">JLPT N5</button>
+      <button id="btn-n4" class="lvl-btn" onclick="switchLevel('N4')">JLPT N4</button>
+    </div>
+
+    <p style="margin-top:20px;"><b>2. Pilih Sesi Belajar:</b></p>
+    <div id="session-container" class="session-grid"></div>
+
+    <button class="btn-primary" onclick="startGame()">Mulai Belajar 🚀</button>
+  </div>
+
+  <div id="game-screen" class="hidden">
+    <div class="score-board">
+      <span id="progress-txt">Soal 1</span>
+      <span id="score-txt">Skor: 0</span>
+    </div>
+
+    <div class="dialogue-box" id="dialogue-container"></div>
+
+    <p style="text-align:left; font-weight:bold; margin-bottom:8px;">Pilih Kanji yang Benar (A/B/C/D):</p>
+    <div class="options-grid" id="options-container"></div>
+
+    <div id="feedback-box" class="feedback">
+      <strong id="feedback-title"></strong>
+      <div class="explanation" id="explanation-txt"></div>
+      <br>
+      <button class="btn-primary" id="next-btn" onclick="nextQuestion()">Soal Berikutnya ➔</button>
+    </div>
+  </div>
+
+  <div id="result-screen" class="hidden">
+    <h2>Sesi Selesai! 🎉</h2>
+    <p style="font-size: 20px;">Skor Akhir Anda: <b id="final-score" style="color:#27ae60;">0</b> / 100</p>
+    <p id="result-msg"></p>
+    <button class="btn-primary" onclick="resetGame()">Pilih Sesi Lain ↺</button>
+  </div>
+</div>
+
+<script>
+  // Data Kanji per Sesi
+  const kanjiData = {
+    N5: {
+      sessions: 5,
+      items: [
+        // SESI 1 (Contoh awal data N5 Sesi 1)
+        { session: 1, desc: "Digunakan untuk objek 'Buku' atau 'Asal/Pusat'. Dibaca 'Hon'.", reading: "ほん を よみます ( [ ___ ] を 読みます )", romaji: "Hon wo yomimasu", meaning: "Membaca buku", options: [{ key: "A", kanji: "本", correct: true }, { key: "B", kanji: "木", correct: false }, { key: "C", kanji: "体", correct: false }, { key: "D", kanji: "休", correct: false }], exp: "<b>Jawaban Benar: 本 (Hon)</b><br>Kanji 本 berarti buku/asal." },
+        { session: 1, desc: "Menyatakan kata kerja 'Pergi'. Dibaca 'I-kimasu'.", reading: "がっこう へ [ ___ ] きます (I-kimasu)", romaji: "Gakkou he ikimasu", meaning: "Pergi ke sekolah", options: [{ key: "A", kanji: "来", correct: false }, { key: "B", kanji: "行", correct: true }, { key: "C", kanji: "食", correct: false }, { key: "D", kanji: "見", correct: false }], exp: "<b>Jawaban Benar: 行 (I-ku / Kou)</b><br>Kanji 行 digunakan pada 行きます (ikimasu)." },
+        { session: 1, desc: "Menunjukkan kata 'Makan'. Dibaca 'Ta-bemasu'.", reading: "ごはん を [ ___ ] べます (Ta-bemasu)", romaji: "Gohan wo tabemasu", meaning: "Makan nasi", options: [{ key: "A", kanji: "飲", correct: false }, { key: "B", kanji: "食", correct: true }, { key: "C", kanji: "飯", correct: false }, { key: "D", kanji: "買", correct: false }], exp: "<b>Jawaban Benar: 食 (Ta-beru)</b><br>Kanji 食 melambangkan makan/makanan." },
+        { session: 1, desc: "Menyatakan elemen 'Waktu / Jam'. Dibaca 'Ji' atau 'Toki'.", reading: "いま なん [ ___ ] ですか", romaji: "Ima nan-ji desu ka", meaning: "Sekarang jam berapa?", options: [{ key: "A", kanji: "時", correct: true }, { key: "B", kanji: "日", correct: false }, { key: "C", kanji: "月", correct: false }, { key: "D", kanji: "年", correct: false }], exp: "<b>Jawaban Benar: 時 (Ji / Toki)</b><br>Kanji 時 melambangkan waktu/jam." },
+        { session: 1, desc: "Menunjukkan kata 'Manusia / Orang'. Dibaca 'Hito' atau 'Jin'.", reading: "あの [ ___ ] は だれですか", romaji: "Ano hito wa dare desu ka", meaning: "Orang itu siapa?", options: [{ key: "A", kanji: "人", correct: true }, { key: "B", kanji: "入", correct: false }, { key: "C", kanji: "八", correct: false }, { key: "D", kanji: "大", correct: false }], exp: "<b>Jawaban Benar: 人 (Hito / Jin)</b><br>Kanji 人 melambangkan manusia/orang." }
+      ]
+    },
+    N4: {
+      sessions: 7,
+      items: [
+        // SESI 1 (Contoh awal data N4 Sesi 1)
+        { session: 1, desc: "Digunakan untuk kata 'Belajar'. Dibaca 'Benkyou' (Ben).", reading: "[ ___ ] 強 します", romaji: "Benkyou shimasu", meaning: "Belajar", options: [{ key: "A", kanji: "勉", correct: true }, { key: "B", kanji: "習", correct: false }, { key: "C", kanji: "練", correct: false }, { key: "D", kanji: "試", correct: false }], exp: "<b>Jawaban Benar: 勉 (Ben)</b><br>勉 + 強 = 勉強 (Belajar)." },
+        { session: 1, desc: "Menyatakan kata kerja 'Berdiri'. Dibaca 'Ta-tsu'.", reading: "ここに [ ___ ] ちます", romaji: "Koko ni tachimasu", meaning: "Berdiri di sini", options: [{ key: "A", kanji: "立", correct: true }, { key: "B", kanji: "座", correct: false }, { key: "C", kanji: "走", correct: false }, { key: "D", kanji: "歩", correct: false }], exp: "<b>Jawaban Benar: 立 (Ta-tsu)</b><br>Kanji 立 berarti berdiri." },
+        { session: 1, desc: "Menunjukkan kata 'Pekerjaan'. Dibaca 'Shigoto' (Shi).", reading: "[ ___ ] 事", romaji: "Shigoto", meaning: "Pekerjaan", options: [{ key: "A", kanji: "仕", correct: true }, { key: "B", kanji: "使", correct: false }, { key: "C", kanji: "作", correct: false }, { key: "D", kanji: "事", correct: false }], exp: "<b>Jawaban Benar: 仕 (Shi)</b><br>仕 + 事 = 仕事 (Pekerjaan)." },
+        { session: 1, desc: "Digunakan untuk 'Rumah Sakit'. Dibaca 'Byouin' (In).", reading: "病 [ ___ ]", romaji: "Byouin", meaning: "Rumah Sakit", options: [{ key: "A", kanji: "院", correct: true }, { key: "B", kanji: "館", correct: false }, { key: "C", kanji: "店", correct: false }, { key: "D", kanji: "屋", correct: false }], exp: "<b>Jawaban Benar: 院 (In)</b><br>病 + 院 = 病院 (Rumah Sakit)." }
+      ]
+    }
+  };
+
+  let selectedLevel = 'N5';
+  let selectedSession = 1;
+  let currentQuestions = [];
+  let currentIndex = 0;
+  let score = 0;
+
+  function renderSessions() {
+    const container = document.getElementById('session-container');
+    container.innerHTML = '';
+    const totalSessions = kanjiData[selectedLevel].sessions;
+
+    for (let i = 1; i <= totalSessions; i++) {
+      const card = document.createElement('div');
+      card.className = `session-card ${i === selectedSession ? 'selected' : ''}`;
+      card.onclick = () => selectSession(i);
+      card.innerHTML = `
+        <div class="session-title">Kotak ${i}</div>
+        <div class="session-count">Sesi ${i} (${selectedLevel})</div>
+      `;
+      container.appendChild(card);
+    }
+  }
+
+  function switchLevel(lvl) {
+    selectedLevel = lvl;
+    selectedSession = 1;
+    document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`btn-${lvl.toLowerCase()}`).classList.add('active');
+    renderSessions();
+  }
+
+  function selectSession(s) {
+    selectedSession = s;
+    renderSessions();
+  }
+
+  function startGame() {
+    const allItems = kanjiData[selectedLevel].items;
+    currentQuestions = allItems.filter(item => item.session === selectedSession);
+
+    if (currentQuestions.length === 0) {
+      alert(`Data Kanji untuk ${selectedLevel} Kotak ${selectedSession} sedang diisikan! Pilih Sesi 1 terlebih dahulu.`);
+      return;
+    }
+
+    currentIndex = 0;
+    score = 0;
+
+    document.getElementById('setup-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('game-screen').classList.remove('hidden');
+
+    loadQuestion();
+  }
+
+  function loadQuestion() {
+    document.getElementById('feedback-box').style.display = 'none';
+    
+    const q = currentQuestions[currentIndex];
+    document.getElementById('progress-txt').innerText = `Kotak ${selectedSession} - Soal ${currentIndex + 1} / ${currentQuestions.length}`;
+    document.getElementById('score-txt').innerText = `Skor: ${score}`;
+
+    let html = `
+      <div class="question-desc">💡 <b>Petunjuk:</b> ${q.desc}</div>
+      <div style="margin-bottom: 10px;">
+        <div class="reading-text">${q.reading.replace('[ ___ ]', '<span class="fill-blank"> [ ? ] </span>')}</div>
+        <div class="romaji-text">🔤 ${q.romaji}</div>
+        <div class="meaning-text">Arti: "${q.meaning}"</div>
+      </div>
+    `;
+    document.getElementById('dialogue-container').innerHTML = html;
+
+    const optionsContainer = document.getElementById('options-container');
+    optionsContainer.innerHTML = '';
+
+    const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+    const keys = ["A", "B", "C", "D"];
+
+    shuffledOptions.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.onclick = () => checkAnswer(opt, q);
+      btn.innerHTML = `
+        <span class="opt-key">${keys[idx]}.</span>
+        <span class="opt-kanji">${opt.kanji}</span>
+      `;
+      optionsContainer.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(selectedOpt, question) {
+    const feedbackBox = document.getElementById('feedback-box');
+    const title = document.getElementById('feedback-title');
+    const exp = document.getElementById('explanation-txt');
+
+    document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+
+    if (selectedOpt.correct) {
+      score += Math.round(100 / currentQuestions.length);
+      feedbackBox.className = 'feedback correct';
+      title.innerText = '✅ TEBAKAN KANJI BENAR!';
+    } else {
+      feedbackBox.className = 'feedback wrong';
+      title.innerText = '❌ KANJI KURANG TEPAT!';
+    }
+
+    exp.innerHTML = `${question.exp}`;
+    feedbackBox.style.display = 'block';
+  }
+
+  function nextQuestion() {
+    currentIndex++;
+    if (currentIndex < currentQuestions.length) {
+      loadQuestion();
+    } else {
+      showResult();
+    }
+  }
+
+  function showResult() {
+    document.getElementById('game-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+
+    document.getElementById('final-score').innerText = score;
+    let msg = "";
+    if (score >= 80) msg = `Luar biasa! Penguasaan Kanji ${selectedLevel} Kotak ${selectedSession} kamu mantap! 👏`;
+    else msg = "Terus berlatih agar semakin familiar dengan Kanji-nya! 💪";
+    
+    document.getElementById('result-msg').innerText = msg;
+  }
+
+  function resetGame() {
+    document.getElementById('setup-screen').classList.remove('hidden');
+    document.getElementById('result-screen').classList.add('hidden');
+  }
+
+  // Inisialisasi awal
+  renderSessions();
+</script>
+
+</body>
+</html>
